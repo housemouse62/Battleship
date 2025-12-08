@@ -7,12 +7,8 @@ class Ship {
     this.orientation = "horizontal";
   }
 
-  createShip(name, length) {
-    const newShip = new Ship(name, length);
-    return newShip;
-  }
-
   hit() {
+    if (this.sunk) return;
     this.numHits++;
     this.isSunk();
     return this.numHits;
@@ -37,6 +33,8 @@ class Gameboard {
     }
   }
 
+  //after testing change this to. ---  return { ...this.cells.get(string) };
+
   getCell(string) {
     return this.cells.get(string);
   }
@@ -47,14 +45,16 @@ class Gameboard {
     let y = parseInt(shipAnchor[1]);
     let spot = [];
 
+    if (ship.orientation !== "horizontal" && ship.orientation !== "vertical") {
+      console.log("Invalid orientation! Must be horizontal or vertical");
+      return;
+    }
     // build array of potential ship placement
     for (let i = 0; i < ship.length; i++) {
       //decide on the coordinate for this run
       const shipAnchorX = ship.orientation === "horizontal" ? x + i : x;
       const shipAnchorY = ship.orientation === "vertical" ? y + i : y;
-      console.log(x, y);
       const key = `${shipAnchorX},${shipAnchorY}`;
-      console.log(key);
       //check board boundry
       if (
         shipAnchorX < 0 ||
@@ -73,13 +73,12 @@ class Gameboard {
         return;
       }
       spot.push(key);
-      console.log(spot);
     }
     //place ship
     for (const key of spot) {
       this.cells.set(key, { ship, hit: false });
-      this.ships.push(ship);
     }
+    this.ships.push(ship);
     //return cells for testing
     return spot.map((c) => this.getCell(c));
   }
@@ -87,6 +86,7 @@ class Gameboard {
   receiveAttack(coord) {
     let cell = this.getCell(coord);
 
+    if (cell === undefined) return;
     // hit cell that was already hit
     if (cell.hit === true) {
       console.log("you've already hit this square, try again");
@@ -94,7 +94,6 @@ class Gameboard {
     }
     // hit cell
     cell.hit = true;
-    cell.allSunk();
 
     //hit empty cell
     if (cell.ship === null) {
@@ -104,6 +103,7 @@ class Gameboard {
 
     //successful hit
     cell.ship.hit();
+    this.allSunk();
   }
 
   allSunk() {
@@ -113,4 +113,14 @@ class Gameboard {
   }
 }
 
-module.exports = { Ship, Fleet, Gameboard };
+class Player {
+  constructor(player) {
+    this.player = player;
+    this.board = new Gameboard();
+  }
+
+  attack(opponentBoard, coord) {
+    return opponentBoard.receiveAttack(coord);
+  }
+}
+module.exports = { Ship, Gameboard, Player };
