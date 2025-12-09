@@ -1,4 +1,4 @@
-class Ship {
+export class Ship {
   constructor(name, length) {
     this.name = name;
     this.length = length;
@@ -20,7 +20,7 @@ class Ship {
   }
 }
 
-class Gameboard {
+export class Gameboard {
   constructor() {
     this.cells = new Map();
     this.ships = [];
@@ -33,10 +33,8 @@ class Gameboard {
     }
   }
 
-  //after testing change this to. ---  return { ...this.cells.get(string) };
-
   getCell(string) {
-    return this.cells.get(string);
+    return { ...this.cells.get(string) };
   }
 
   placeShip(ship, coord) {
@@ -84,7 +82,7 @@ class Gameboard {
   }
 
   receiveAttack(coord) {
-    let cell = this.getCell(coord);
+    let cell = this.cells.get(coord);
 
     if (cell === undefined) return;
     // hit cell that was already hit
@@ -94,16 +92,23 @@ class Gameboard {
     }
     // hit cell
     cell.hit = true;
+    this.cells.set(coord, cell);
 
     //hit empty cell
     if (cell.ship === null) {
       console.log("you missed");
-      return;
+      return "Miss!";
     }
 
     //successful hit
     cell.ship.hit();
-    this.allSunk();
+    if (cell.ship.sunk) {
+      if (this.allSunk()) {
+        return "Game Over!";
+      } else {
+        return "Sunk!";
+      }
+    } else return "Hit!";
   }
 
   allSunk() {
@@ -113,7 +118,7 @@ class Gameboard {
   }
 }
 
-class Player {
+export class Player {
   constructor(player) {
     this.player = player;
     this.board = new Gameboard();
@@ -123,4 +128,4 @@ class Player {
     return opponentBoard.receiveAttack(coord);
   }
 }
-module.exports = { Ship, Gameboard, Player };
+//xmodule.exports = { Ship, Gameboard, Player };

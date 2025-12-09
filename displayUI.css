@@ -1,0 +1,13 @@
+#container {
+  display: flex;
+}
+
+.cell {
+  border: black solid 0.5px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 50px);
+  margin: 20px;
+}
