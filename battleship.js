@@ -87,16 +87,15 @@ export class Gameboard {
     if (cell === undefined) return;
     // hit cell that was already hit
     if (cell.hit === true) {
-      console.log("you've already hit this square, try again");
-      return;
+      return "Cell already hit, try again!";
     }
+
     // hit cell
     cell.hit = true;
     this.cells.set(coord, cell);
 
     //hit empty cell
     if (cell.ship === null) {
-      console.log("you missed");
       return "Miss!";
     }
 
@@ -128,4 +127,3 @@ export class Player {
     return opponentBoard.receiveAttack(coord);
   }
 }
-//xmodule.exports = { Ship, Gameboard, Player };
