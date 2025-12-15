@@ -1,13 +1,45 @@
 #container {
   display: flex;
+  flex-direction: column;
 }
 
+.header {
+  display: flex;
+  justify-content: center;
+  height: 120px;
+}
+.gameboardDiv {
+  display: flex;
+  justify-content: center;
+}
 .cell {
-  border: black solid 0.5px;
+  border: grey solid 0.5px;
+  background-color: lightblue;
+}
+
+.cell.ship {
+  border-color: white 1px solid;
+  background-color: black;
+}
+
+.cell.hit.ship {
+  background-color: red;
+}
+
+.cell.hit:not(.ship) {
+  background-color: white;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(10, 50px);
-  margin: 20px;
+  margin: 30px;
+}
+
+.preview-valid {
+  background-color: rgba(0, 255, 0, 0.5) !important;
+}
+
+.preview-invalid {
+  background-color: rgba(255, 0, 0, 0.5) !important;
 }

@@ -5,6 +5,7 @@ export class Ship {
     this.numHits = 0;
     this.sunk = false;
     this.orientation = "horizontal";
+    this.coords = [];
   }
 
   hit() {
@@ -34,7 +35,8 @@ export class Gameboard {
   }
 
   getCell(string) {
-    return { ...this.cells.get(string) };
+    return this.cells.get(string);
+    //return { ...this.cells.get(string) };
   }
 
   placeShip(ship, coord) {
@@ -50,8 +52,8 @@ export class Gameboard {
     // build array of potential ship placement
     for (let i = 0; i < ship.length; i++) {
       //decide on the coordinate for this run
-      const shipAnchorX = ship.orientation === "horizontal" ? x + i : x;
-      const shipAnchorY = ship.orientation === "vertical" ? y + i : y;
+      const shipAnchorX = ship.orientation === "horizontal" ? x : x + i;
+      const shipAnchorY = ship.orientation === "vertical" ? y : y + i;
       const key = `${shipAnchorX},${shipAnchorY}`;
       //check board boundry
       if (
@@ -71,6 +73,7 @@ export class Gameboard {
         return;
       }
       spot.push(key);
+      ship.coords.push(key);
     }
     //place ship
     for (const key of spot) {
@@ -105,9 +108,13 @@ export class Gameboard {
       if (this.allSunk()) {
         return "Game Over!";
       } else {
+        console.log("sunk");
         return "Sunk!";
       }
-    } else return "Hit!";
+    } else {
+      console.log(cell.ship.name);
+      return "Hit!";
+    }
   }
 
   allSunk() {
